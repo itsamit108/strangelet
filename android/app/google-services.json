@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "479915272465",
+    "project_id": "strangelet-1ece9",
+    "storage_bucket": "strangelet-1ece9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479915272465:android:8629d4653ae56139a104b0",
+        "android_client_info": {
+          "package_name": "com.example.strangelet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2Lhoro0XgEhl_0duRiBF_oUS3Jer4IqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

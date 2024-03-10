@@ -1,15 +1,23 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
+import 'package:strangelet/firebase_options.dart';
 import 'package:strangelet/signaling.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(MyApp());
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -18,13 +26,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -32,8 +40,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Signaling signaling = Signaling();
-  RTCVideoRenderer _localRenderer = RTCVideoRenderer();
-  RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
+  final RTCVideoRenderer _localRenderer = RTCVideoRenderer();
+  final RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
   String? roomId;
   TextEditingController textEditingController = TextEditingController(text: '');
 
@@ -61,11 +69,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome to Flutter Explained - WebRTC"),
+        title: const Text("Welcome to Flutter Explained - WebRTC"),
       ),
       body: Column(
         children: [
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -73,9 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   signaling.openUserMedia(_localRenderer, _remoteRenderer);
                 },
-                child: Text("Open camera & microphone"),
+                child: const Text("Open camera & microphone"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               ElevatedButton(
@@ -84,9 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   textEditingController.text = roomId!;
                   setState(() {});
                 },
-                child: Text("Create room"),
+                child: const Text("Create room"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               ElevatedButton(
@@ -97,20 +105,20 @@ class _MyHomePageState extends State<MyHomePage> {
                     _remoteRenderer,
                   );
                 },
-                child: Text("Join room"),
+                child: const Text("Join room"),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               ElevatedButton(
                 onPressed: () {
                   signaling.hangUp(_localRenderer);
                 },
-                child: Text("Hangup"),
+                child: const Text("Hangup"),
               )
             ],
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -128,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Join the following Room: "),
+                const Text("Join the following Room: "),
                 Flexible(
                   child: TextFormField(
                     controller: textEditingController,
@@ -137,7 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ],
             ),
           ),
-          SizedBox(height: 8)
+          const SizedBox(height: 8)
         ],
       ),
     );
