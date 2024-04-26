@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Welcome to Flutter Explained - WebRTC"),
+        title: const Text("Strangelet"),
       ),
       body: Column(
         children: [
@@ -126,8 +126,12 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(child: RTCVideoView(_localRenderer, mirror: true)),
-                  Expanded(child: RTCVideoView(_remoteRenderer)),
+                  Expanded(
+                    child: RTCVideoView(_localRenderer, mirror: true),
+                  ),
+                  Expanded(
+                    child: RTCVideoView(_remoteRenderer),
+                  ),
                 ],
               ),
             ),

@@ -45,7 +45,9 @@ class Signaling {
 
     peerConnection?.onIceCandidate = (RTCIceCandidate candidate) {
       print('Got candidate: ${candidate.toMap()}');
-      callerCandidatesCollection.add(candidate.toMap());
+      callerCandidatesCollection.add(
+        candidate.toMap(),
+      );
     };
     // Finish Code for collecting ICE candidate
 
@@ -135,7 +137,9 @@ class Signaling {
           return;
         }
         print('onIceCandidate: ${candidate.toMap()}');
-        calleeCandidatesCollection.add(candidate.toMap());
+        calleeCandidatesCollection.add(
+          candidate.toMap(),
+        );
       };
       // Code for collecting ICE candidate above
 
@@ -152,7 +156,10 @@ class Signaling {
       print('Got offer $data');
       var offer = data['offer'];
       await peerConnection?.setRemoteDescription(
-        RTCSessionDescription(offer['sdp'], offer['type']),
+        RTCSessionDescription(
+          offer['sdp'],
+          offer['type'],
+        ),
       );
       var answer = await peerConnection!.createAnswer();
       print('Created Answer $answer');
@@ -188,8 +195,9 @@ class Signaling {
     RTCVideoRenderer localVideo,
     RTCVideoRenderer remoteVideo,
   ) async {
-    var stream = await navigator.mediaDevices
-        .getUserMedia({'video': true, 'audio': true});
+    var stream = await navigator.mediaDevices.getUserMedia(
+      {'video': true, 'audio': true},
+    );
 
     localVideo.srcObject = stream;
     localStream = stream;
@@ -204,7 +212,9 @@ class Signaling {
     }
 
     if (remoteStream != null) {
-      remoteStream!.getTracks().forEach((track) => track.stop());
+      remoteStream!.getTracks().forEach(
+            (track) => track.stop(),
+          );
     }
     if (peerConnection != null) peerConnection!.close();
 
