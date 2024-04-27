@@ -68,90 +68,111 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context).size;
+    bool isMobile = screenSize.width < 600; // Adjust this value as needed
     return Scaffold(
       appBar: AppBar(
         title: const Text("Strangelet"),
       ),
-      body: Column(
-        children: [
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  signaling.openUserMedia(_localRenderer, _remoteRenderer);
-                },
-                child: const Text("Open camera & microphone"),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: isMobile
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: RTCVideoView(_localRenderer, mirror: true),
+                          ),
+                          const SizedBox(height: 8),
+                          Expanded(
+                            child: RTCVideoView(_remoteRenderer),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: RTCVideoView(_localRenderer, mirror: true),
+                          ),
+                          Expanded(
+                            child: RTCVideoView(_remoteRenderer),
+                          ),
+                        ],
+                      ),
               ),
-              const SizedBox(
-                width: 8,
+            ),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      signaling.openUserMedia(_localRenderer, _remoteRenderer);
+                    },
+                    child: const Text("Open camera & microphone"),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  ElevatedButton(
+                    onPressed: () async {
+                      roomId = await signaling.createRoom(_remoteRenderer);
+                      textEditingController.text = roomId!;
+                      setState(() {});
+                    },
+                    child: const Text("Create room"),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add roomId
+                      signaling.joinRoom(
+                        textEditingController.text.trim(),
+                        _remoteRenderer,
+                      );
+                    },
+                    child: const Text("Join room"),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      signaling.hangUp(_localRenderer);
+                    },
+                    child: const Text("Hangup"),
+                  )
+                ],
               ),
-              ElevatedButton(
-                onPressed: () async {
-                  roomId = await signaling.createRoom(_remoteRenderer);
-                  textEditingController.text = roomId!;
-                  setState(() {});
-                },
-                child: const Text("Create room"),
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Add roomId
-                  signaling.joinRoom(
-                    textEditingController.text.trim(),
-                    _remoteRenderer,
-                  );
-                },
-                child: const Text("Join room"),
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  signaling.hangUp(_localRenderer);
-                },
-                child: const Text("Hangup"),
-              )
-            ],
-          ),
-          const SizedBox(height: 8),
-          Expanded(
-            child: Padding(
+            ),
+            const SizedBox(height: 8),
+            Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Expanded(
-                    child: RTCVideoView(_localRenderer, mirror: true),
-                  ),
-                  Expanded(
-                    child: RTCVideoView(_remoteRenderer),
-                  ),
+                  const Text("Join the following Room: "),
+                  Flexible(
+                    child: TextFormField(
+                      controller: textEditingController,
+                    ),
+                  )
                 ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Join the following Room: "),
-                Flexible(
-                  child: TextFormField(
-                    controller: textEditingController,
-                  ),
-                )
-              ],
-            ),
-          ),
-          const SizedBox(height: 8)
-        ],
+            const SizedBox(height: 8)
+          ],
+        ),
       ),
     );
   }
