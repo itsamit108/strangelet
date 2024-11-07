@@ -18,12 +18,11 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Instamatch Video Chat',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -43,24 +42,23 @@ class _MyHomePageState extends State<MyHomePage> {
   Signaling signaling = Signaling();
   final RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   final RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
-  String? roomId;
-  TextEditingController textEditingController = TextEditingController(text: '');
 
   @override
   void initState() {
+    super.initState();
     _localRenderer.initialize();
     _remoteRenderer.initialize();
 
     signaling.onAddRemoteStream = ((stream) {
-      _remoteRenderer.srcObject = stream;
-      setState(() {});
+      setState(() {
+        _remoteRenderer.srcObject = stream;
+      });
     });
-
-    super.initState();
   }
 
   @override
   void dispose() {
+    signaling.hangUp(_localRenderer);
     _localRenderer.dispose();
     _remoteRenderer.dispose();
     super.dispose();
@@ -69,10 +67,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context).size;
-    bool isMobile = screenSize.width < 600; // Adjust this value as needed
+    bool isMobile = screenSize.width < 600;
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Strangelet"),
+        title: const Text("Instamatch Video Chat"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -84,7 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: isMobile
                     ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
                             child: RTCVideoView(_localRenderer, mirror: true),
@@ -96,7 +93,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         ],
                       )
                     : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Expanded(
                             child: RTCVideoView(_localRenderer, mirror: true),
@@ -108,69 +104,35 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
               ),
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      signaling.openUserMedia(_localRenderer, _remoteRenderer);
-                    },
-                    child: const Text("Open camera & microphone"),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ElevatedButton(
-                    onPressed: () async {
-                      roomId = await signaling.createRoom(_remoteRenderer);
-                      textEditingController.text = roomId!;
-                      setState(() {});
-                    },
-                    child: const Text("Create room"),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Add roomId
-                      signaling.joinRoom(
-                        textEditingController.text.trim(),
-                        _remoteRenderer,
-                      );
-                    },
-                    child: const Text("Join room"),
-                  ),
-                  const SizedBox(
-                    width: 8,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      signaling.hangUp(_localRenderer);
-                    },
-                    child: const Text("Hangup"),
-                  )
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    signaling.openUserMedia(_localRenderer, _remoteRenderer);
+                  },
+                  child: const Text("Open camera & microphone"),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    signaling.startInstamatch();
+                  },
+                  child: const Text("Instamatch"),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    signaling.hangUp(_localRenderer);
+                    setState(() {
+                      _remoteRenderer.srcObject = null;
+                    });
+                  },
+                  child: const Text("Hangup"),
+                ),
+              ],
             ),
             const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Join the following Room: "),
-                  Flexible(
-                    child: TextFormField(
-                      controller: textEditingController,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            const SizedBox(height: 8)
           ],
         ),
       ),
